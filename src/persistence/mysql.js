@@ -1,6 +1,8 @@
 const waitPort = require('wait-port');
 const fs = require('fs');
 const mysql = require('mysql2');
+const dbPassword = "admin123"; // ❌ Hardcoded secret
+
 
 const {
     MYSQL_HOST: HOST,

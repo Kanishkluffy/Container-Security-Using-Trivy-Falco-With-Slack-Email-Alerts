@@ -1,0 +1,14 @@
+- rule: Shell in container via docker exec
+  desc: Detect interactive shell started inside container
+  condition: evt.type = execve and proc.name in (sh, bash, ash) and container.id exists
+  output: "Shell in container (user=%user.name container=%container.id cmdline=%proc.cmdline)"
+  priority: WARNING
+  tags: [filesystem, container]
+
+- rule: Sensitive file write in container
+  desc: Detect writes to /etc/passwd or /etc/shadow in container
+  condition: (evt.type = open or evt.type = openat) and evt.arg.resmask contains W and fd.name startswith /etc/passwd and container.id exists
+  output: "Container wrote to sensitive file (container=%container.id file=%fd.name user=%user.name)"
+  priority: CRITICAL
+  tags: [filesystem, container]
+

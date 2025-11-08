@@ -1,0 +1,42 @@
+name: Security Pipeline (Trivy)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  trivy_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (for buildx)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build docker image
+        run: docker build -t todo-vuln:ci .
+
+      - name: Trivy scan image
+        uses: aquasecurity/trivy-action@v1
+        with:
+          image-ref: todo-vuln:ci
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Run Trivy FS scan
+        uses: aquasecurity/trivy-action@v1
+        with:
+          scan-type: fs
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
