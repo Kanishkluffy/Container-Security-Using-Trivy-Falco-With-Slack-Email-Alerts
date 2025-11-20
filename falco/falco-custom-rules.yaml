@@ -1,0 +1,48 @@
+- rule: Shell Spawned in Container
+  desc: Detects a shell spawned inside the container
+  condition: >
+    evt.type = execve and
+    container.id != host and
+    container.name contains "devsecops-demo-app" and
+    proc.name in (bash, sh, zsh)
+  output: >
+    Shell spawned in container (user=%user.name command=%proc.cmdline container=%container.name)
+  priority: WARNING
+  tags: [container, shell]
+
+- rule: Suspicious Command Execution
+  desc: Detect suspicious commands
+  condition: >
+    evt.type = execve and
+    container.id != host and
+    container.name contains "devsecops-demo-app" and
+    proc.name in (whoami, id, ps, netstat, ifconfig, curl, wget)
+  output: >
+    Suspicious command (user=%user.name command=%proc.cmdline container=%container.name)
+  priority: WARNING
+  tags: [container, process]
+
+- rule: Read Sensitive File
+  desc: Detect reading of sensitive files
+  condition: >
+    evt.type in (open, openat) and
+    evt.is_open_read=true and
+    container.id != host and
+    container.name contains "devsecops-demo-app" and
+    fd.name in (/etc/passwd, /etc/shadow, /etc/sudoers)
+  output: >
+    Sensitive file read (user=%user.name file=%fd.name container=%container.name command=%proc.cmdline)
+  priority: WARNING
+  tags: [filesystem]
+
+- rule: Python Subprocess
+  desc: Python spawning system commands
+  condition: >
+    evt.type = execve and
+    container.id != host and
+    container.name contains "devsecops-demo-app" and
+    proc.pname contains "python"
+  output: >
+    Python process (parent=%proc.pname command=%proc.cmdline container=%container.name)
+  priority: NOTICE
+  tags: [process, python]

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+.venv
+venv/
+ENV/
+
+# Trivy reports
+trivy-reports/
+
+# Logs
+*.log
+/var/log/falco/
+
+# Alert credentials (IMPORTANT!)
+alerts/alert-config.env
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

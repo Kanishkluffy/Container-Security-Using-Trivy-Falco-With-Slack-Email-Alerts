@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  vulnerable-app:
+    build: .
+    container_name: devsecops-demo-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./app.py:/app/app.py
+    restart: unless-stopped
+    networks:
+      - app-network
+    labels:
+      - "app.name=devsecops-demo"
+      - "app.version=1.0"
+      - "security.scan=trivy"
+      - "security.monitor=falco"
+
+networks:
+  app-network:
+    driver: bridge
