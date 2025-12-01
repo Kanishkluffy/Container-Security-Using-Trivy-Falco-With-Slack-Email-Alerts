@@ -123,6 +123,12 @@ def init_db():
 def home():
     return render_template_string(HTML_TEMPLATE)
 
+@app.route('/app')
+def app_home():
+    return "<h1>Hello world</h1>"
+
+
+
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({
